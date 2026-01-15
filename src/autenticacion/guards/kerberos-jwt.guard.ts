@@ -1,0 +1,36 @@
+import { type ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import type { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+
+@Injectable()
+export class KerberosJwtGuard extends AuthGuard('jwt') {
+  constructor(private reflector: Reflector) {
+    super();
+  }
+
+  canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [context.getHandler(), context.getClass()]);
+    if (isPublic) {
+      return true;
+    }
+    return super.canActivate(context);
+  }
+
+  handleRequest(err: Error | null, user: any, info: { message?: string } | null) {
+    switch (info?.message) {
+      case 'No auth token':
+        throw new UnauthorizedException('Token de autenticación no proporcionado');
+      case 'jwt expired':
+        throw new UnauthorizedException('Token de autenticación expirado');
+      case 'invalid token':
+        throw new UnauthorizedException('Token de autenticación inválido');
+    }
+
+    if (err || !user) {
+      throw new UnauthorizedException(err?.message || 'Error de autenticación');
+    }
+
+    return user;
+  }
+}
