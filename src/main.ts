@@ -12,10 +12,9 @@ import { VALIDATION_PIPE_CONFIG } from './config/validation.config';
 import { ExcepcionGlobalFilter } from './core/filtros/excepcion-global.filter';
 
 async function bootstrap() {
-  const logger = new Logger('Servicio Personal Policial');
+  const logger = new Logger(`${envs.apiTitle}`);
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const port = envs.port;
 
   // Configuración de OpenAPI
   const document = SwaggerModule.createDocument(app, swaggerConfig);
@@ -34,8 +33,8 @@ async function bootstrap() {
 
   app.enableCors();
 
-  await app.listen(port);
-  logger.log(`API disponible en: http://localhost:${port}/api`);
-  logger.log(`Documentación disponible en: http://localhost:${port}/docs`);
+  await app.listen(envs.port);
+  logger.log(`API disponible en: http://localhost:${envs.port}/api`);
+  logger.log(`Documentación disponible en: http://localhost:${envs.port}/docs`);
 }
 bootstrap();
