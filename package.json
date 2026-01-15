@@ -1,8 +1,9 @@
 {
-  "name": "new-api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "plantilla-nestjs-backend",
+  "version": "1.0.0",
+  "description": "Plantilla base para proyectos con NestJS, TypeScript, Prisma y PostgreSQL.",
+  "author": "Ruben David Mamani Ali",
+  "type": "module",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
