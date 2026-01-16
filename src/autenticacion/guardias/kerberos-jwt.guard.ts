@@ -17,7 +17,8 @@ export class KerberosJwtGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err: Error | null, user: any, info: { message?: string } | null) {
+  // biome-ignore lint/suspicious/noExplicitAny: Firma requerida por AuthGuard de @nestjs/passport
+  handleRequest<TUser = any>(err: any, user: any, info: any, _context: ExecutionContext, _status?: any): TUser {
     switch (info?.message) {
       case 'No auth token':
         throw new UnauthorizedException('Token de autenticación no proporcionado');

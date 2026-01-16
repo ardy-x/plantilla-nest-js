@@ -1,8 +1,9 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ENVS } from '@/config/envs.config';
 
 export interface JwtPayloadSystem {
   userId: string;
@@ -25,6 +26,13 @@ export class KerberosJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayloadSystem) {
+    // Validar que el usuario tenga acceso a al menos un sistema permitido
+    const tieneAcceso = payload.systems.some((sistema) => ENVS.sistemasPermitidos.includes(sistema));
+
+    if (!tieneAcceso) {
+      throw new UnauthorizedException('No tiene acceso a ningún sistema permitido');
+    }
+
     return {
       idUsuario: payload.userId,
       idSistemaUsuario: payload.userSystemId,
