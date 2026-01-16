@@ -8,17 +8,13 @@
   "scripts": {
     "build": "nest build",
     "format": "biome format --write src",
+    "format:check": "biome format --check src",
     "lint": "biome check --write src",
     "lint:check": "biome check src",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky"
   },
   "lint-staged": {
