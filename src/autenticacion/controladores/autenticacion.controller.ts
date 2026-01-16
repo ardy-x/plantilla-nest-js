@@ -1,4 +1,4 @@
-import { Controller, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RespuestaBuilder } from '@/core/utilidades/respuesta.builder';
 import type { DecodificarTokenResponseDto } from '../dtos/salida/decodificar-token-response.dto';
@@ -9,7 +9,7 @@ import { KerberosService } from '../servicios/kerberos.service';
 export class AutenticacionController {
   constructor(private readonly kerberosService: KerberosService) {}
 
-  @Post('intercambio-codigo/:codigo')
+  @Get('intercambio-codigo/:codigo')
   @ApiOperation({ summary: 'Intercambio de código' })
   async decodificarToken(@Param('codigo', ParseUUIDPipe) codigo: string): Promise<DecodificarTokenResponseDto> {
     const datos = await this.kerberosService.decodificarToken(codigo);
