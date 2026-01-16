@@ -4,7 +4,7 @@ import { BadRequestException, Injectable, Logger, UnauthorizedException } from '
 import * as jwt from 'jsonwebtoken';
 import { KerberosApi } from '../apis/kerberos.api';
 import type { DecodificarTokenDatosDto } from '../dtos/salida/decodificar-token-response.dto';
-import type { CodigoDecodificado } from '../types/codigo-decodificado';
+import type { CodigoDecodificado } from '../tipos/codigo-decodificado';
 import { TraductorDatosService } from './traductor-datos.service';
 
 @Injectable()

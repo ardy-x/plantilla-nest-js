@@ -192,7 +192,7 @@ return RespuestaBuilder.exito(200, 'Usuarios obtenidos', { usuarios: respuesta.u
 Protege rutas que requieren autenticación JWT:
 
 ```typescript
-import { KerberosJwtGuard } from '@/autenticacion/guards/kerberos-jwt.guard';
+import { KerberosJwtGuard } from '@/autenticacion/guardias/kerberos-jwt.guard';
 
 @Controller('usuarios')
 @UseGuards(KerberosJwtGuard) // Protege todo el controlador
@@ -210,8 +210,8 @@ export class UsuariosController {
 Protege rutas que requieren roles específicos:
 
 ```typescript
-import { KerberosJwtGuard } from '@/autenticacion/guards/kerberos-jwt.guard';
-import { RolesGuard } from '@/autenticacion/guards/roles.guard';
+import { KerberosJwtGuard } from '@/autenticacion/guardias/kerberos-jwt.guard';
+import { RolesGuard } from '@/autenticacion/guardias/roles.guard';
 
 @Controller('admin')
 @UseGuards(KerberosJwtGuard, RolesGuard) // Ambos guards
@@ -232,7 +232,7 @@ export class AdminController {
 Marca rutas como públicas (sin autenticación):
 
 ```typescript
-import { Public } from '@/autenticacion/decorators/public.decorator';
+import { Public } from '@/autenticacion/decoradores/public.decorator';
 
 @Controller('auth')
 @UseGuards(KerberosJwtGuard) // Guard global
@@ -256,7 +256,7 @@ export class AuthController {
 Define roles permitidos para una ruta:
 
 ```typescript
-import { Roles } from '@/autenticacion/decorators/roles.decorator';
+import { Roles } from '@/autenticacion/decoradores/roles.decorator';
 
 @Controller('reportes')
 @UseGuards(KerberosJwtGuard, RolesGuard)
@@ -275,7 +275,7 @@ export class ReportesController {
 Obtiene el ID del usuario autenticado:
 
 ```typescript
-import { IdUsuarioActual } from '@/autenticacion/decorators/id-usuario.decorator';
+import { IdUsuarioActual } from '@/autenticacion/decoradores/id-usuario.decorator';
 
 @Controller('perfil')
 @UseGuards(KerberosJwtGuard)
@@ -293,11 +293,11 @@ export class PerfilController {
 
 ```typescript
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
-import { KerberosJwtGuard } from '@/autenticacion/guards/kerberos-jwt.guard';
-import { RolesGuard } from '@/autenticacion/guards/roles.guard';
-import { Public } from '@/autenticacion/decorators/public.decorator';
-import { Roles } from '@/autenticacion/decorators/roles.decorator';
-import { IdUsuarioActual } from '@/autenticacion/decorators/id-usuario.decorator';
+import { KerberosJwtGuard } from '@/autenticacion/guardias/kerberos-jwt.guard';
+import { RolesGuard } from '@/autenticacion/guardias/roles.guard';
+import { Public } from '@/autenticacion/decoradores/public.decorator';
+import { Roles } from '@/autenticacion/decoradores/roles.decorator';
+import { IdUsuarioActual } from '@/autenticacion/decoradores/id-usuario.decorator';
 
 @Controller('productos')
 @UseGuards(KerberosJwtGuard, RolesGuard)

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { DecodificarTokenDatosDto, ModuloDto } from '../dtos/salida/decodificar-token-response.dto';
-import type { CodigoDecodificado } from '../types/codigo-decodificado';
+import type { CodigoDecodificado } from '../tipos/codigo-decodificado';
 
 type ModuloRaw = CodigoDecodificado['systemData']['modules'][0];
 
