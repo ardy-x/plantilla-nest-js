@@ -12,6 +12,7 @@ const envsSchema = z.object({
   API_DESCRIPTION: z.string().default('API Documentation'),
   API_VERSION: z.string().default('1.0.0'),
   FRONTEND_URL: z.string(),
+  SISTEMAS_PERMITIDOS: z.string().transform((val) => val.split(',')),
 });
 
 export type ENV_VARS = z.infer<typeof envsSchema>;
@@ -29,4 +30,5 @@ export const ENVS = {
   apiDescription: envsVars.API_DESCRIPTION,
   apiVersion: envsVars.API_VERSION,
   frontendUrl: envsVars.FRONTEND_URL,
+  sistemasPermitidos: envsVars.SISTEMAS_PERMITIDOS,
 };
