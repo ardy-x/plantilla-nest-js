@@ -34,15 +34,68 @@ Todas las respuestas siguen el formato estándar usando `RespuestaBaseDto`:
   "error": false,
   "status": 200,
   "message": "Mensaje descriptivo",
-  "response": { /* datos */ }
+  "response": {
+    "entidad": { /* datos específicos */ }
+  }
 }
 ```
 
-### Respuestas de Éxito
+Los datos siempre se envuelven en un objeto nombrado para mayor claridad (ej: `usuario`, `usuarios`, `producto`, etc.).
+
+### ❌ Incorrecto (No hacer)
 
 ```typescript
-// En tu controlador
-return RespuestaBuilder.exito(200, 'Usuario creado exitosamente', usuario);
+// ❌ MAL: Datos directos en response
+return RespuestaBuilder.exito(200, 'Usuario encontrado', {
+  id: 1,
+  nombre: "Juan Pérez",
+  email: "juan@example.com"
+});
+```
+
+Esto produce una respuesta confusa:
+
+```typescript
+{
+  "error": false,
+  "status": 200,
+  "message": "Usuario encontrado",
+  "response": {
+    "id": 1,
+    "nombre": "Juan Pérez",
+    "email": "juan@example.com"
+  }
+}
+```
+
+### ✅ Correcto
+
+```typescript
+// ✅ BIEN: Datos envueltos en objeto nombrado
+return RespuestaBuilder.exito(200, 'Usuario encontrado exitosamente', { 
+  usuario: {
+    id: 1,
+    nombre: "Juan Pérez",
+    email: "juan@example.com"
+  }
+});
+```
+
+Esto produce una respuesta clara:
+
+```typescript
+{
+  "error": false,
+  "status": 200,
+  "message": "Usuario encontrado exitosamente",
+  "response": {
+    "usuario": {
+      "id": 1,
+      "nombre": "Juan Pérez",
+      "email": "juan@example.com"
+    }
+  }
+}
 ```
 
 ### Respuestas de Error
@@ -118,7 +171,7 @@ interface PaginacionMeta {
 }
 
 const respuesta = {
-  usuarios: usuarios,
+  usuarios,
   paginacion: {
     total: 100,
     pagina: 1,
@@ -127,7 +180,7 @@ const respuesta = {
   }
 };
 
-return RespuestaBuilder.exito(200, 'Usuarios obtenidos', respuesta);
+return RespuestaBuilder.exito(200, 'Usuarios obtenidos', { usuarios: respuesta.usuarios, paginacion: respuesta.paginacion });
 ```
 
 ## Protección de Rutas
@@ -352,8 +405,12 @@ RespuestaBuilder.error(codigo: number, mensaje: string)
 
 ```env
 PORT=4000
+NODE_ENV=development
 DATABASE_URL="postgresql://usuario:pass@localhost:5432/db"
+FRONTEND_URL=http://localhost:3000  # URL del frontend para CORS
 KERBEROS_API_BASE=https://api.ejemplo.com
+REDIS_URL=redis://localhost:6379
+REDIS_TTL=300
 API_TITLE="Mi API"
 API_DESCRIPTION="Descripción"
 API_VERSION="1.0.0"
@@ -375,8 +432,9 @@ pnpm start:dev    # Desarrollo
 pnpm build        # Compilar
 pnpm start:prod   # Producción
 pnpm format       # Formatear
+pnpm format:check # Verificar formato
 pnpm lint         # Lint
-pnpm test         # Tests
+pnpm lint:check   # Solo verificar lint
 ```
 
 ## Stack Tecnológico
