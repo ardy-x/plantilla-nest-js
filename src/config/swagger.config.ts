@@ -1,10 +1,10 @@
 import { DocumentBuilder } from '@nestjs/swagger';
-import { envs } from './envs.config';
+import { ENVS } from './envs.config';
 
-export const swaggerConfig = new DocumentBuilder()
-  .setTitle(envs.apiTitle)
-  .setDescription(envs.apiDescription)
-  .setVersion(envs.apiVersion)
+export const SWAGGER_CONFIG = new DocumentBuilder()
+  .setTitle(ENVS.apiTitle)
+  .setDescription(ENVS.apiDescription)
+  .setVersion(ENVS.apiVersion)
   .addServer('api') // Agregar el prefijo global a la documentación
   .addBearerAuth(
     {

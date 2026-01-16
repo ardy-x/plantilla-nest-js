@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
-import type { EnvVars } from '@/config/envs.config';
+import type { ENV_VARS } from '@/config/envs.config';
 @Injectable()
 export class KerberosApi {
   private readonly logger = new Logger(KerberosApi.name);
@@ -10,7 +10,7 @@ export class KerberosApi {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly configService: ConfigService<EnvVars, true>,
+    private readonly configService: ConfigService<ENV_VARS, true>,
   ) {
     this.kerberosUrl = this.configService.get('KERBEROS_API_BASE', {
       infer: true,

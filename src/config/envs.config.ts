@@ -6,18 +6,19 @@ const envsSchema = z.object({
   NODE_ENV: z.enum(['development', 'production']).default('development'),
   DATABASE_URL: z.string(),
   KERBEROS_API_BASE: z.string(),
-  REDIS_URL: z.string().default('redis://localhost:6379'),
+  REDIS_URL: z.string(),
   REDIS_TTL: z.coerce.number().default(300), // 5 minutos por defecto
   API_TITLE: z.string().default('API'),
   API_DESCRIPTION: z.string().default('API Documentation'),
   API_VERSION: z.string().default('1.0.0'),
+  FRONTEND_URL: z.string(),
 });
 
-export type EnvVars = z.infer<typeof envsSchema>;
+export type ENV_VARS = z.infer<typeof envsSchema>;
 
 const envsVars = envsSchema.parse(process.env);
 
-export const envs = {
+export const ENVS = {
   port: envsVars.PORT,
   environment: envsVars.NODE_ENV,
   databaseUrl: envsVars.DATABASE_URL,
@@ -27,4 +28,5 @@ export const envs = {
   apiTitle: envsVars.API_TITLE,
   apiDescription: envsVars.API_DESCRIPTION,
   apiVersion: envsVars.API_VERSION,
+  frontendUrl: envsVars.FRONTEND_URL,
 };
