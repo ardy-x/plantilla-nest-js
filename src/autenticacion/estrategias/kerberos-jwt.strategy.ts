@@ -37,9 +37,9 @@ export class KerberosJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       idUsuario: payload.userId,
       idSistemaUsuario: payload.userSystemId,
       nroDocumento: payload.nroDocumento,
-      sid: payload.sid,
+      idSessionActiva: payload.sid,
       rol: payload.role,
-      systems: payload.systems,
+      sistemasPermitidos: payload.systems,
     };
   }
 }
