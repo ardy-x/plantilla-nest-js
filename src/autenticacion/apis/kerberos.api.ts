@@ -3,6 +3,9 @@ import { BadRequestException, ForbiddenException, Injectable, InternalServerErro
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import type { ENV_VARS } from '@/config/envs.config';
+import type { IntercambioCodigoDatos, KerberosApiResponse, RefreshTokenDatos } from './tipos/kerberos-api-response.interface';
+import { KERBEROS_ENDPOINTS } from './tipos/kerberos-endpoints';
+
 @Injectable()
 export class KerberosApi {
   private readonly logger = new Logger(KerberosApi.name);
@@ -18,11 +21,11 @@ export class KerberosApi {
   }
 
   async intercambioCodigo(code: string): Promise<{ token: string }> {
-    const url = `${this.kerberosUrl}/auth/exchange-code`;
+    const url = `${this.kerberosUrl}${KERBEROS_ENDPOINTS.EXCHANGE_CODE}`;
     try {
-      const response = await firstValueFrom(this.httpService.post(url, { code }));
+      const response = await firstValueFrom(this.httpService.post<KerberosApiResponse<IntercambioCodigoDatos>>(url, { code }));
       this.logger.log('Intercambio exitoso, token recibido');
-      return response.data.data;
+      return response.data.data!;
     } catch (error) {
       this.logger.error(`Error en intercambioCodigo: ${error.message}`);
       if (error.response) {
@@ -41,7 +44,7 @@ export class KerberosApi {
   }
 
   async cierreSesionSistema(idSistema: string, accessToken: string): Promise<void> {
-    const url = `${this.kerberosUrl}/auth/system-logout`;
+    const url = `${this.kerberosUrl}${KERBEROS_ENDPOINTS.SYSTEM_LOGOUT}`;
     try {
       await firstValueFrom(
         this.httpService.post(
@@ -69,15 +72,15 @@ export class KerberosApi {
   }
 
   async refreshToken(accessToken: string): Promise<{ access_token: string; refresh_token: string }> {
-    const url = `${this.kerberosUrl}/auth/refresh`;
+    const url = `${this.kerberosUrl}${KERBEROS_ENDPOINTS.REFRESH}`;
     try {
       const response = await firstValueFrom(
-        this.httpService.get(url, {
+        this.httpService.get<KerberosApiResponse<RefreshTokenDatos>>(url, {
           headers: { Authorization: `Bearer ${accessToken}` },
         }),
       );
       this.logger.log('Refresh token exitoso');
-      return response.data.data;
+      return response.data.data!;
     } catch (error) {
       this.logger.error(`Error en refreshToken: ${error.message}`);
       if (error.response) {
