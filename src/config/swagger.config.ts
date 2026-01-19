@@ -5,7 +5,6 @@ export const SWAGGER_CONFIG = new DocumentBuilder()
   .setTitle(ENVS.apiTitle)
   .setDescription(ENVS.apiDescription)
   .setVersion(ENVS.apiVersion)
-  .addServer('api') // Agregar el prefijo global a la documentación
   .addBearerAuth(
     {
       type: 'http',
