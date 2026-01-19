@@ -39,4 +39,57 @@ export class KerberosApi {
       }
     }
   }
+
+  async cierreSesionSistema(idSistema: string, accessToken: string): Promise<void> {
+    const url = `${this.kerberosUrl}/auth/system-logout`;
+    try {
+      await firstValueFrom(
+        this.httpService.post(
+          url,
+          { systemId: idSistema },
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        ),
+      );
+      this.logger.log('Cierre de sesión del sistema exitoso');
+    } catch (error) {
+      this.logger.error(`Error en cierreSesionSistema: ${error.message}`);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 401) {
+          throw new BadRequestException('Token de autenticación expirado');
+        } else {
+          throw new InternalServerErrorException(`Error en el servidor de Kerberos: ${status}`);
+        }
+      } else {
+        throw new ServiceUnavailableException('Error de conexión con el servidor de Kerberos');
+      }
+    }
+  }
+
+  async refreshToken(accessToken: string): Promise<{ access_token: string; refresh_token: string }> {
+    const url = `${this.kerberosUrl}/auth/refresh`;
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(url, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }),
+      );
+      this.logger.log('Refresh token exitoso');
+      return response.data.data;
+    } catch (error) {
+      this.logger.error(`Error en refreshToken: ${error.message}`);
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 401) {
+          throw new BadRequestException('Token de autenticación expirado o inválido');
+        } else {
+          throw new InternalServerErrorException(`Error en el servidor de Kerberos: ${status}`);
+        }
+      } else {
+        throw new ServiceUnavailableException('Error de conexión con el servidor de Kerberos');
+      }
+    }
+  }
 }

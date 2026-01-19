@@ -4,6 +4,7 @@ import { BadRequestException, Injectable, Logger, UnauthorizedException } from '
 import * as jwt from 'jsonwebtoken';
 import { KerberosApi } from '../apis/kerberos.api';
 import type { DecodificarTokenDatosDto } from '../dtos/salida/decodificar-token-response.dto';
+import type { RefreshTokenResponseDto } from '../dtos/salida/refresh-token-response.dto';
 import type { CodigoDecodificado } from '../tipos/codigo-decodificado';
 import { TraductorDatosService } from './traductor-datos.service';
 
@@ -41,5 +42,17 @@ export class KerberosService {
       }
       throw error;
     }
+  }
+
+  async cierreSesionSistema(idSistema: string, accessToken: string): Promise<void> {
+    await this.kerberosApi.cierreSesionSistema(idSistema, accessToken);
+  }
+
+  async refreshToken(accessToken: string): Promise<RefreshTokenResponseDto> {
+    const resultado = await this.kerberosApi.refreshToken(accessToken);
+    return {
+      accessToken: resultado.access_token,
+      refreshToken: resultado.refresh_token,
+    };
   }
 }
