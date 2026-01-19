@@ -1,4 +1,4 @@
-# API Personal Policial - Plantilla Base NestJS
+# Plantilla Base NestJS
 
 [![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?logo=nestjs)](https://nestjs.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](https://www.typescriptlang.org)
@@ -39,49 +39,7 @@ Todas las respuestas siguen el formato estándar usando `RespuestaBaseDto`:
   }
 }
 ```
-
-Los datos siempre se envuelven en un objeto nombrado para mayor claridad (ej: `usuario`, `usuarios`, `producto`, etc.).
-
-### ❌ Incorrecto (No hacer)
-
-```typescript
-// ❌ MAL: Datos directos en response
-return RespuestaBuilder.exito(200, 'Usuario encontrado', {
-  id: 1,
-  nombre: "Juan Pérez",
-  email: "juan@example.com"
-});
-```
-
-Esto produce una respuesta confusa:
-
-```typescript
-{
-  "error": false,
-  "status": 200,
-  "message": "Usuario encontrado",
-  "response": {
-    "id": 1,
-    "nombre": "Juan Pérez",
-    "email": "juan@example.com"
-  }
-}
-```
-
-### ✅ Correcto
-
-```typescript
-// ✅ BIEN: Datos envueltos en objeto nombrado
-return RespuestaBuilder.exito(200, 'Usuario encontrado exitosamente', { 
-  usuario: {
-    id: 1,
-    nombre: "Juan Pérez",
-    email: "juan@example.com"
-  }
-});
-```
-
-Esto produce una respuesta clara:
+### Ejemplo
 
 ```typescript
 {
