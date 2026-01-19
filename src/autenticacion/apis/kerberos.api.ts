@@ -27,9 +27,10 @@ export class KerberosApi {
       this.logger.log('Intercambio exitoso, token recibido');
       return response.data.data!;
     } catch (error) {
-      this.logger.error(`Error en intercambioCodigo: ${error.message}`);
       if (error.response) {
         const status = error.response.status;
+        const message = error.response.data?.message || error.message;
+        this.logger.error(`Error en intercambioCodigo - Status: ${status}, Mensaje: ${message}`);
         if (status === 400) {
           throw new BadRequestException(`Código de autenticación inválido: ${code}`);
         } else if (status === 403) {
@@ -38,6 +39,7 @@ export class KerberosApi {
           throw new InternalServerErrorException(`Error en el servidor de Kerberos: ${status}`);
         }
       } else {
+        this.logger.error(`Error en intercambioCodigo - Sin respuesta: ${error.message}`);
         throw new ServiceUnavailableException('Error de conexión con el servidor de Kerberos');
       }
     }
@@ -57,40 +59,44 @@ export class KerberosApi {
       );
       this.logger.log('Cierre de sesión del sistema exitoso');
     } catch (error) {
-      this.logger.error(`Error en cierreSesionSistema: ${error.message}`);
       if (error.response) {
         const status = error.response.status;
+        const message = error.response.data?.message || error.message;
+        this.logger.error(`Error en cierreSesionSistema - Status: ${status}, Mensaje: ${message}`);
         if (status === 401) {
           throw new BadRequestException('Token de autenticación expirado');
         } else {
           throw new InternalServerErrorException(`Error en el servidor de Kerberos: ${status}`);
         }
       } else {
+        this.logger.error(`Error en cierreSesionSistema - Sin respuesta: ${error.message}`);
         throw new ServiceUnavailableException('Error de conexión con el servidor de Kerberos');
       }
     }
   }
 
-  async refreshToken(accessToken: string): Promise<{ access_token: string; refresh_token: string }> {
+  async refreshToken(refreshToken: string): Promise<{ access_token: string; refresh_token: string }> {
     const url = `${this.kerberosUrl}${KERBEROS_ENDPOINTS.REFRESH}`;
     try {
       const response = await firstValueFrom(
         this.httpService.get<KerberosApiResponse<RefreshTokenDatos>>(url, {
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: { Authorization: `Refresh ${refreshToken}` },
         }),
       );
       this.logger.log('Refresh token exitoso');
       return response.data.data!;
     } catch (error) {
-      this.logger.error(`Error en refreshToken: ${error.message}`);
       if (error.response) {
         const status = error.response.status;
+        const message = error.response.data?.message || error.message;
+        this.logger.error(`Error en refreshToken - Status: ${status}, Mensaje: ${message}`);
         if (status === 401) {
-          throw new BadRequestException('Token de autenticación expirado o inválido');
+          throw new BadRequestException('Tu sesión ha expirado completamente. Por favor, inicia sesión nuevamente');
         } else {
           throw new InternalServerErrorException(`Error en el servidor de Kerberos: ${status}`);
         }
       } else {
+        this.logger.error(`Error en refreshToken - Sin respuesta: ${error.message}`);
         throw new ServiceUnavailableException('Error de conexión con el servidor de Kerberos');
       }
     }

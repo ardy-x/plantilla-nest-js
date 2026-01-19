@@ -48,8 +48,8 @@ export class KerberosService {
     await this.kerberosApi.cierreSesionSistema(idSistema, accessToken);
   }
 
-  async refreshToken(accessToken: string): Promise<RefreshTokenResponseDto> {
-    const resultado = await this.kerberosApi.refreshToken(accessToken);
+  async refreshToken(refreshToken: string): Promise<RefreshTokenResponseDto> {
+    const resultado = await this.kerberosApi.refreshToken(refreshToken);
     return {
       accessToken: resultado.access_token,
       refreshToken: resultado.refresh_token,

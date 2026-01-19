@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import type { RespuestaBaseDto } from '@/core/dto/respuesta-base.dto';
 import { RespuestaBuilder } from '@/core/utilidades/respuesta.builder';
@@ -31,10 +31,11 @@ export class AutenticacionController {
   }
 
   @Get('refresh')
-  @UseGuards(KerberosJwtGuard)
   @ApiOperation({ summary: 'Renovar tokens' })
-  async refreshToken(@TokenActual() accessToken: string): Promise<RespuestaBaseDto<RefreshTokenResponseDto>> {
-    const datos = await this.kerberosService.refreshToken(accessToken);
+  async refreshToken(@Headers('authorization') refreshToken: string): Promise<RespuestaBaseDto<RefreshTokenResponseDto>> {
+    // Extraer el token si viene con 'Refresh '
+    const token = refreshToken.replace('Refresh ', '');
+    const datos = await this.kerberosService.refreshToken(token);
     return RespuestaBuilder.exito(200, 'Renovación de tokens exitosa', datos);
   }
 }
