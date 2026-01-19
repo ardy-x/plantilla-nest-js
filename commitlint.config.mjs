@@ -5,6 +5,6 @@ export default {
     'scope-empty': [2, 'never'], // Scope obligatorio
     'scope-case': [2, 'always', 'lower-case'], // Scope en minúsculas
     'subject-case': [2, 'never', ['upper-case']],
-    'header-max-length': [2, 'always', 100],
+    'header-max-length': [2, 'always', 120],
   },
 };
