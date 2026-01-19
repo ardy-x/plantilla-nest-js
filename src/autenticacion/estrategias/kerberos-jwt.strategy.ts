@@ -30,7 +30,11 @@ export class KerberosJwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const tieneAcceso = payload.systems.some((sistema) => ENVS.sistemasPermitidos.includes(sistema));
 
     if (!tieneAcceso) {
-      throw new UnauthorizedException('No tiene acceso a ningún sistema permitido');
+      const sistemasNoPermitidos = payload.systems.filter((sistema) => !ENVS.sistemasPermitidos.includes(sistema));
+      const count = sistemasNoPermitidos.length;
+      const sistemaText = count === 1 ? 'sistema' : 'sistemas';
+      const articulo = count === 1 ? 'al' : 'a los';
+      throw new UnauthorizedException(`Lo sentimos, no tienes permisos para acceder ${articulo} ${sistemaText}: ${sistemasNoPermitidos.join(', ')}`);
     }
 
     return {
