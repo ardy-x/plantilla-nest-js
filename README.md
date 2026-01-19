@@ -183,7 +183,74 @@ const respuesta = {
 return RespuestaBuilder.exito(200, 'Usuarios obtenidos', { usuarios: respuesta.usuarios, paginacion: respuesta.paginacion });
 ```
 
-## Protección de Rutas
+### Endpoints de Autenticación
+
+#### 1. Intercambio de Código
+
+Intercambia un código de autenticación por tokens JWT:
+
+```typescript
+POST /autenticacion/intercambio-codigo
+Content-Type: application/json
+
+{
+  "codigo": "uuid-valido"
+}
+
+// Respuesta
+{
+  "error": false,
+  "status": 200,
+  "message": "Token decodificado exitosamente",
+  "response": {
+    "datosUsuario": { /* ... */ },
+    "datosSistema": { /* ... */ },
+    "tokens": { /* ... */ }
+  }
+}
+```
+
+#### 2. Cierre de Sesión del Sistema
+
+Termina la sesión del usuario en un sistema específico:
+
+```typescript
+POST /autenticacion/cierre-sesion-sistema
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "idSistema": "uuid-del-sistema"
+}
+
+// Respuesta
+{
+  "error": false,
+  "status": 200,
+  "message": "Cierre de sesión del sistema completado exitosamente",
+  "response": null
+}
+```
+
+#### 3. Renovar Tokens
+
+Obtiene nuevos tokens de acceso y refresco:
+
+```typescript
+GET /autenticacion/refresh
+Authorization: Bearer {token}
+
+// Respuesta
+{
+  "error": false,
+  "status": 200,
+  "message": "Renovación de tokens exitosa",
+  "response": {
+    "accessToken": "nuevo-access-token",
+    "refreshToken": "nuevo-refresh-token"
+  }
+}
+```
 
 ### Guards Disponibles
 
@@ -289,6 +356,25 @@ export class PerfilController {
 }
 ```
 
+#### @TokenActual()
+
+Obtiene el token de acceso del usuario autenticado:
+
+```typescript
+import { TokenActual } from '@/autenticacion/decoradores/token-actual.decorator';
+
+@Controller('external')
+@UseGuards(KerberosJwtGuard)
+export class ExternalController {
+  
+  @Post('accion')
+  async realizarAccion(@TokenActual() accessToken: string) {
+    // accessToken contiene el token JWT sin el prefijo "Bearer"
+    return this.externalService.llamarApiExterna(accessToken);
+  }
+}
+```
+
 ### Ejemplo Completo
 
 ```typescript
@@ -385,6 +471,43 @@ src/core/
 │   └── paginacion-response.interface.ts
 └── utilidades/
     └── respuesta.builder.ts         # Builder para respuestas estándar
+```
+
+## Módulo de Autenticación
+
+```
+src/autenticacion/
+├── autenticacion.module.ts
+├── apis/
+│   ├── kerberos.api.ts              # Cliente HTTP para API Kerberos
+│   └── tipos/
+│       ├── kerberos-api-response.interface.ts  # Tipos de respuesta API externa
+│       └── kerberos-endpoints.ts               # Constantes de endpoints
+├── controladores/
+│   └── autenticacion.controller.ts
+├── decoradores/
+│   ├── id-usuario.decorator.ts      # @IdUsuarioActual()
+│   ├── public.decorator.ts          # @Public()
+│   ├── roles.decorator.ts           # @Roles()
+│   └── token-actual.decorator.ts    # @TokenActual()
+├── dtos/
+│   ├── entrada/
+│   │   ├── decodificar-token-request.dto.ts
+│   │   └── cierre-sesion-sistema-request.dto.ts
+│   └── salida/
+│       ├── decodificar-token-response.dto.ts
+│       └── refresh-token-response.dto.ts
+├── estrategias/
+│   └── kerberos-jwt.strategy.ts
+├── guardias/
+│   ├── kerberos-jwt.guard.ts
+│   └── roles.guard.ts
+├── servicios/
+│   ├── kerberos.service.ts
+│   └── traductor-datos.service.ts
+└── tipos/
+    ├── codigo-decodificado.ts
+    └── roles-permitidos.enum.ts
 ```
 
 ### RespuestaBuilder
