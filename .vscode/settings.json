@@ -43,5 +43,8 @@
       "text": "Mantén el formato de Conventional Commits (feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert). y con scope siempre"
     },
     { "text": "Usa imperativo (ej: 'agrega' en lugar de 'agregado')." }
-  ]
+  ],
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }
